@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css"
+          integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1"
+          crossorigin="anonymous">
+    <title>Давай поедим!!</title>
+
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-light bg-light">
+        <h1>Давай поедим!</h1>
+        <a class="novbar-brand" href="#">🥩🥦🌶️</a>
+
+    </nav>
+    <form>
+        <h4 class="text-black-50 bg-white">Вкусно быстро и недорого!</h4>
+        <button type="button" class="btn btn-warning btn-lg" onclick="window.location.href='/menu'">Меню</button>
+        <button type="button" class="btn btn-warning btn-lg" onclick="window.location.href='/basket'">Корзина</button>
+        <button type="button" class="btn btn-warning btn-lg" onclick="window.location.href='/about_us'">о нас</button>
+    </form>
+</header>
+<main role="main" class="container">
+    {% block content %}{% endblock %}
+</main>
+</body>
+</html>
