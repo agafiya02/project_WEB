@@ -1,103 +1,23 @@
 {% extends "base.html" %}
 
 {% block content %}
+<h1>Записи в блоге</h1>
+<title>Меню</title>
+{% for item in position%}
 <div class="row">
     <div class="col-6 col-sm-5">
         <div class="card" style="width: 20rem;">
-            <img src="static/img/dumplings.jpg" class="card-img-top">
             <div class="card-body">
-                <h4 class="card-text">Пельмени</h4>
-                <h4 class="card-text">543 руб.</h4>
+                <h4 class="card-text">{{item.name}}</h4>
+                <h4 class="card-text">{{item.price}}</h4>
                 <div id="myDiv">
-                    <button type="button" class="btn btn-warning btn-lg">
-                        корзину
-                    </button>
+                    <a href="{{ url_for('add_position_in_basket') }}" class="btn btn-warning btn-lg">
+                        в корзину
+                    </a>
                 </div>
-                <script>
-                    document.getElementById("myDiv").addEventListener("mouseup", function() {
-                      alert("Товар добавлен в корзину!");
-                    });
-                </script>
-            </div>
-        </div>
-    </div>
-    <div class="col-6 col-sm-5">
-        <div class="card" style="width: 18rem;">
-            <img src="static/img/pancakes.jpg" class="card-img-top">
-            <div class="card-body">
-                <h4 class="card-text">Оладушки</h4>
-                <h4 class="card-text">214 руб.</h4>
-                <div id="myDiv1">
-                    <button type="button" class="btn btn-warning btn-lg">
-                        корзину
-                    </button>
-                </div>
-                <script>
-                    document.getElementById("myDiv1").addEventListener("mouseup", function() {
-                      alert("Товар добавлен в корзину!");
-                    });
-                </script>
-            </div>
-        </div>
-    </div>
-    <div class="w-100"></div>
-    <div class="col-6 col-sm-5">
-        <div class="card" style="width: 20rem;">
-            <img src="static/img/pasta.jpg" class="card-img-top">
-            <div class="card-body">
-                <h4 class="card-text">Макароны</h4>
-                <h4 class="card-text">324 руб.</h4>
-                <div id="myDiv2">
-                    <button type="button" class="btn btn-warning btn-lg">
-                        корзину
-                    </button>
-                </div>
-                <script>
-                    document.getElementById("myDiv2").addEventListener("mouseup", function() {
-                      alert("Товар добавлен в корзину!");
-                    });
-                </script>
-            </div>
-        </div>
-    </div>
-    <div class="col-6 col-sm-5">
-        <div class="card" style="width: 18rem;">
-            <img src="static/img/water.jpg" class="card-img-top">
-            <div class="card-body">
-                <h4 class="card-text">Вода</h4>
-                <h4 class="card-text">54 руб.</h4>
-                <div id="myDiv3">
-                    <button type="button" class="btn btn-warning btn-lg">
-                        корзину
-                    </button>
-                </div>
-                <script>
-                    document.getElementById("myDiv3").addEventListener("mouseup", function() {
-                      alert("Товар добавлен в корзину!");
-                    });
-                </script>
-            </div>
-        </div>
-    </div>
-    <div class="w-100"></div>
-    <div class="col-6 col-sm-5">
-        <div class="card" style="width: 20rem;">
-            <img src="static/img/tea.jpg" class="card-img-top">
-            <div class="card-body">
-                <h4 class="card-text">Чай</h4>
-                <h4 class="card-text">52 руб.</h4>
-                <div id="myDiv4">
-                    <button type="button" class="btn btn-warning btn-lg">
-                        корзину
-                    </button>
-                </div>
-                <script>
-                    document.getElementById("myDiv4").addEventListener("mouseup", function() {
-                      alert("Товар добавлен в корзину!");
-                    });
-                </script>
             </div>
         </div>
     </div>
 </div>
+{% endfor %}
 {% endblock %}
