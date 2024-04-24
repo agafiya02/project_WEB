@@ -1,23 +1,26 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Записи в блоге</h1>
-<title>Меню</title>
-{% for item in position%}
-<div class="row">
+<h1>Меню</h1>
+
+{% for item in position %}
     <div class="col-6 col-sm-5">
         <div class="card" style="width: 20rem;">
             <div class="card-body">
                 <h4 class="card-text">{{item.name}}</h4>
-                <h4 class="card-text">{{item.price}}</h4>
-                <div id="myDiv">
-                    <a href="{{ url_for('add_position_in_basket') }}" class="btn btn-warning btn-lg">
-                        в корзину
-                    </a>
-                </div>
+                <h4 class="card-text">{{item.price}}.руб</h4>
+                <img width="260" height="200" src="{{ item.about }}">
+                <a href="/basket/{{ item.id }}" class="btn btn-success btn-lg">
+                    в корзину
+                </a>
+                {% if current_user.name == "admin" %}
+                <a href="/position_delete/{{ item.id }}" class="btn btn-danger btn-lg">
+                    Удалить
+                </a>
+                {% endif %}
             </div>
         </div>
     </div>
-</div>
+
 {% endfor %}
 {% endblock %}
