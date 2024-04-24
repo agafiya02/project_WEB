@@ -8,6 +8,7 @@
           integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1"
           crossorigin="anonymous">
     <title>{{ title }}</title>
+    <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet" type="text/css">
 
 </head>
 <body>
@@ -15,16 +16,28 @@
 
 <header>
     <nav class="navbar navbar-light bg-light">
-        <h1>Давай поедим!</h1>
+        <h1>Давай поедим</h1>
+        {% if current_user.is_authenticated %}
+        <h1 class="navbar-brand" href="/logout">{{ current_user.name }}</h1>
+        <a class="btn btn-success" href="/logout">Выйти</a>
+        {% else %}
+        <p>
+            <a class="btn btn-success" href="/register">Зарегистрироваться</a>
+            <a class="btn btn-success" href="/login">Войти</a>
+
+        </p>
+        {% endif %}
         <a class="novbar-brand" href="#">Cafe One</a>
     </nav>
 
     <h4>Вкусно, быстро и недорого!</h4>
-    <button type="button" class="btn btn-warning btn-lg" onclick="window.location.href='/menu'">Меню</button>
-    <button type="button" class="btn btn-warning btn-lg" onclick="window.location.href='/basket'">Корзина</button>
-    <button type="button" class="btn btn-warning btn-lg" onclick="window.location.href='/position'">Добавить позицию в
-        меню
-    </button>
+    <button type="button" class="btn btn-success btn-lg" onclick="window.location.href='/menu'">Меню</button>
+    <button type="button" class="btn btn-success btn-lg" onclick="window.location.href='/basket'">Корзина</button>
+    {% if current_user.is_authenticated and current_user.name == admin %}
+        <button type="button"  class="btn btn-success btn-lg" onclick="window.location.href='/position'">Добавить позицию в
+            меню</button>
+    {% endif %}
+
 </header>
 <main role="main" class="container">
     {% block content %}{% endblock %}
