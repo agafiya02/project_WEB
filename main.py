@@ -1,10 +1,11 @@
-from flask import Flask, render_template, redirect, abort
+from flask import Flask, render_template, redirect, url_for, flash, abort
 from data import session
-from data.positions import Position
+from data import users
 import datetime
-from data.users import User
-from flask_login import LoginManager, login_user, login_required
-from forms.user import RegisterForm, LoginForm, PositionForm
+from data.positions import Position
+from data.baskets import Basket
+from flask_login import LoginManager, login_user, login_required, logout_user
+from forms.position import RegisterForm, LoginForm, PositionForm
 
 app = Flask(__name__)
 app.config['PERMANENT_SESSION_LIFETIME'] = datetime.timedelta(
@@ -14,13 +15,14 @@ app.config['SECRET_KEY'] = 'my_secret_key'
 
 login_manager = LoginManager()
 login_manager.init_app(app)
-session.global_init("db/user.db")
+session.global_init("db/users.db")
+ADMIN = "admin"
 
 
 @login_manager.user_loader
 def load_user(user_id):
     db_sess = session.create_session()
-    return db_sess.query(Position).get(user_id)
+    return db_sess.query(users.User).get(user_id)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -28,7 +30,7 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         db_sess = session.create_session()
-        user = db_sess.query(User).filter(User.email == form.email.data).first()
+        user = db_sess.query(users.User).filter(users.User.email == form.email.data).first()
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
             return redirect("/")
@@ -47,11 +49,11 @@ def reqister():
                                    form=form,
                                    message="Пароли не совпадают")
         db_sess = session.create_session()
-        if db_sess.query(User).filter(User.email == form.email.data).first():
+        if db_sess.query(users.User).filter(users.User.email == form.email.data).first():
             return render_template('register.html', title='Регистрация',
                                    form=form,
                                    message="Такой пользователь уже есть")
-        user = User(
+        user = users.User(
             name=form.name.data,
             email=form.email.data,
             about=form.about.data
@@ -65,29 +67,36 @@ def reqister():
 
 @app.route('/menu')
 def menu():
-    # <a href="{{ url_for('add_position_in_basket') }}" class="btn btn-warning btn-lg">
     db_sess = session.create_session()
     position1 = db_sess.query(Position)
+    return render_template('menu.html', position=position1, admin=ADMIN)
 
-    return render_template('menu.html', position=position1)
 
-
-@app.route('/logout')
-@login_required
-def logout():
-    return redirect("/")
+@app.route('/')
+def main():
+    return render_template('base.html', title='Меню', admin=ADMIN)
 
 
 @app.route('/basket')
 def basket():
-    return render_template('basket.html')
+    db_sess = session.create_session()
+    basket = db_sess.query(Basket)
+    return render_template('basket.html', title='Корзина', baskets=basket)
 
 
-# def add_position_in_basket():
-# db_sess = session.create_session()
-# for position_1 in db_sess.query(Position).all():
-#  if position_1.name == ...:
-#   return ...
+@app.route('/basket/<int:id>', methods=['GET', 'POST'])
+def basket_add(id):
+    db_sess = session.create_session()
+    basket1 = db_sess.query(Position).filter(Position.id == id).first()
+    if basket1:
+        basket_1 = Basket(
+            name=basket1.name,
+            price=basket1.price
+        )
+
+        db_sess.add(basket_1)
+        db_sess.commit()
+    return redirect('/menu')
 
 
 @app.route('/position', methods=['GET', 'POST'])
@@ -95,43 +104,57 @@ def position():
     form = PositionForm()
     if form.validate_on_submit():
         db_sess = session.create_session()
+        if db_sess.query(Position).filter(Position.name == form.name.data).first():
+            return render_template('position.html', title='давай поедим',
+                                   form=form,
+                                   message="Такая позиция уже есть")
+        if db_sess.query(Position).filter("0" > form.price.data).first():
+            return render_template('position.html', title='давай поедим',
+                                   form=form,
+                                   message="ЦЕНА НЕ МОЖЕТ БЫТЬ ОТРИЦАТЕЛЬНОЙ")
 
-        user = Position(
+        position_1 = Position(
             name=form.name.data,
             price=form.price.data,
             about=form.about.data
         )
-        db_sess.add(user)
+        db_sess.add(position_1)
         db_sess.commit()
 
         return redirect('/menu')
-
     return render_template('position.html', title='Добавление блюда', form=form)
+
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash("Вы вышли из аккаунта", "success")
+    return redirect(url_for('login'))
 
 
 @app.route('/position_delete/<int:id>', methods=['GET', 'POST'])
 @login_required
-def news_delete(id):
+def position_delete(id):
     db_sess = session.create_session()
-    position1 = db_sess.query(Position).filter(Position.id == id).first()
-    if position1:
-        db_sess.delete(position1)
+    position = db_sess.query(Position).filter(Position.id == id).first()
+    if position:
+        db_sess.delete(position)
         db_sess.commit()
     else:
         abort(404)
+    return redirect('/menu')
+
+
+@app.route('/to_pay')
+@login_required
+def to_pay():
+    db_sess = session.create_session()
+    for basket1 in db_sess.query(Basket).all():
+        db_sess.delete(basket1)
+        db_sess.commit()
     return redirect('/')
-
-
-@app.route('/')
-def name():
-    return render_template('base.html')
 
 
 if __name__ == '__main__':
     app.run(port=8080, host='127.0.0.1')
-
-'''
-регистрация, чтоб только админ мог добавлять и удалять позиции из меню
-подправить картинки,
-сделать по красивее меню!!!!
-'''
