@@ -1,5 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
+    <h1>Корзина:</h1>
+    {% for basket in baskets %}
+        <h4>{{ basket.name }} {{ basket.price }} .руб</h4>
+    {% endfor %}
+        <h1>Итого: </h1>
 
+    <button type="button" class="btn btn-success btn-lg" onclick="window.location.href='/to_pay'">Оплатить</button>
 {% endblock %}
