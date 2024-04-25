@@ -2,8 +2,32 @@
 
 {% block content %}
 <h1>Меню</h1>
-
+{% if current_user.name != "admin" %}
 {% for item in position %}
+{% if item.active %}
+<div class="row">
+    <div class="col-6 col-sm-5">
+        <div class="card" style="width: 20rem;">
+            <div class="card-body">
+                <h4 class="card-text">{{item.name}}</h4>
+                <h4 class="card-text">{{item.price}}.руб</h4>
+                <img width="260" height="200" src="{{ item.about }}" alt="Картинка грузится!!">
+                <a href="/basket/{{ item.id }}" class="btn btn-success btn-lg">
+                    в корзину
+                </a>
+            </div>
+        </div>
+    </div>
+    <h1></h1>
+</div>
+{% endif %}
+{% endfor %}
+{% endif %}
+
+{% if current_user.name == "admin" %}
+{% for item in position %}
+{% if item.active %}
+<div class="row">
     <div class="col-6 col-sm-5">
         <div class="card" style="width: 20rem;">
             <div class="card-body">
@@ -13,14 +37,42 @@
                 <a href="/basket/{{ item.id }}" class="btn btn-success btn-lg">
                     в корзину
                 </a>
-                {% if current_user.name == "admin" %}
                 <a href="/position_delete/{{ item.id }}" class="btn btn-danger btn-lg">
                     Удалить
                 </a>
-                {% endif %}
+                <h1></h1>
+                <a href="/position_hide/{{ item.id }}" class="btn btn-danger btn-lg">
+                    Скрыть для пользователя
+                </a>
             </div>
         </div>
     </div>
-
+    <h1></h1>
+</div>
+{% else %}
+<div class="row">
+    <div class="col-6 col-sm-5">
+        <div class="card" style="width: 20rem;">
+            <div class="card-body">
+                <h4 class="card-text">{{item.name}}</h4>
+                <h4 class="card-text">{{item.price}}.руб</h4>
+                <img width="260" height="200" src="{{ item.about }}">
+                <a href="/basket/{{ item.id }}" class="btn btn-success btn-lg">
+                    в корзину
+                </a>
+                <a href="/position_delete/{{ item.id }}" class="btn btn-danger btn-lg">
+                    Удалить
+                </a>
+                <h1></h1>
+                <a href="/position_hide/{{ item.id }}" class="btn btn-danger btn-lg">
+                    Показать
+                </a>
+            </div>
+        </div>
+    </div>
+    <h1></h1>
+</div>
+{% endif %}
 {% endfor %}
+{% endif %}
 {% endblock %}
