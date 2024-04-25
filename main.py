@@ -80,14 +80,16 @@ def main():
 @app.route('/basket')
 def basket():
     db_sess = session.create_session()
-    basket = db_sess.query(Basket)
-    return render_template('basket.html', title='Корзина', baskets=basket)
+    baskets = db_sess.query(Basket)
+    summ = sum(int(b.price) for b in baskets)
+    return render_template('basket.html', title='Корзина', baskets=baskets, summ=summ)
 
 
 @app.route('/basket/<int:id>', methods=['GET', 'POST'])
 def basket_add(id):
     db_sess = session.create_session()
     basket1 = db_sess.query(Position).filter(Position.id == id).first()
+    #user_id1 = db_sess.query(users.User).filter(users.User.id == user_id).first()
     if basket1:
         basket_1 = Basket(
             name=basket1.name,
@@ -108,7 +110,7 @@ def position():
             return render_template('position.html', title='давай поедим',
                                    form=form,
                                    message="Такая позиция уже есть")
-        if db_sess.query(Position).filter("0" > form.price.data).first():
+        if db_sess.query(Position).filter("0" >= form.price.data).first():
             return render_template('position.html', title='давай поедим',
                                    form=form,
                                    message="ЦЕНА НЕ МОЖЕТ БЫТЬ ОТРИЦАТЕЛЬНОЙ")
@@ -143,6 +145,20 @@ def position_delete(id):
         db_sess.commit()
     else:
         abort(404)
+    return redirect('/menu')
+
+
+@app.route('/position_hide/<int:id>', methods=['GET', 'POST'])
+@login_required
+def position_hide(id):
+    db_sess = session.create_session()
+    position1 = db_sess.query(Position).filter(Position.id == id).first()
+    if position1.active:
+        position1.active = not position1.active
+        db_sess.commit()
+    else:
+        position1.active = not position1.active
+        db_sess.commit()
     return redirect('/menu')
 
 
