@@ -9,6 +9,6 @@ class Position(SqlAlchemyBase, UserMixin):
 
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)
-    name = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    name = sqlalchemy.Column(sqlalchemy.String, unique = True, nullable=True)
     about = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    price = sqlalchemy.Column(sqlalchemy.String, unique=True, nullable=True)
+    price = sqlalchemy.Column(sqlalchemy.String, nullable=True)
