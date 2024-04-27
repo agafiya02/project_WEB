@@ -6,7 +6,8 @@ from wtforms.validators import DataRequired
 class PositionForm(FlaskForm):
     name = StringField('Название позиции', validators=[DataRequired()])
     price = StringField('цена позиции', validators=[DataRequired()])
-    about = StringField("Ссылка на фото")
+    img = StringField("Ссылка на фото")
+    about = StringField("Выберите категорию(Напитки или завтраки)")
     submit = SubmitField('Сохранить')
 
 
