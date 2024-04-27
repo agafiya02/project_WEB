@@ -3,10 +3,12 @@
 {% block content %}
     <h1>Корзина:</h1>
     {% for basket in baskets %}
-<!--    {% if current_user.is_authenticated and current_user == basket.user %}-->
+    {% if current_user.is_authenticated and current_user.id == basket.user_id %}
         <h4>{{ basket.name }} {{ basket.price }} .руб</h4>
+    {% endif %}
     {% endfor %}
-        <h1>Итого: {{ summ }}</h1>
-<!--    {% endif%}-->
+    <h1>Итого: {{ summ }}.руб</h1>
+
     <button type="button" class="btn btn-success btn-lg" onclick="window.location.href='/to_pay'">Оплатить</button>
+    <h1></h1>
 {% endblock %}
