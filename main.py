@@ -2,6 +2,7 @@ from flask import Flask, render_template, redirect, url_for, flash, abort
 from data import session
 from data import users
 import datetime
+import flask_login
 from data.positions import Position
 from data.baskets import Basket
 from flask_login import LoginManager, login_user, login_required, logout_user
@@ -89,16 +90,21 @@ def basket():
 def basket_add(id):
     db_sess = session.create_session()
     basket1 = db_sess.query(Position).filter(Position.id == id).first()
-    #user_id1 = db_sess.query(users.User).filter(users.User.id == user_id).first()
+    userid = int(flask_login.current_user.id)
     if basket1:
         basket_1 = Basket(
             name=basket1.name,
-            price=basket1.price
+            price=basket1.price,
+            user_id=userid
         )
 
         db_sess.add(basket_1)
         db_sess.commit()
-    return redirect('/menu')
+    if basket1.about == "Завтраки":
+        return redirect('/breakfast')
+
+    if basket1.about == "Напитки":
+        return redirect('/drink')
 
 
 @app.route('/position', methods=['GET', 'POST'])
@@ -114,10 +120,15 @@ def position():
             return render_template('position.html', title='давай поедим',
                                    form=form,
                                    message="ЦЕНА НЕ МОЖЕТ БЫТЬ ОТРИЦАТЕЛЬНОЙ")
+        if db_sess.query(Position).filter(form.about.data != "Завтраки", form.about.data != "Напитки").first():
+            return render_template('position.html', title='давай поедим',
+                                   form=form,
+                                   message="ВЫ ВВЕЛИ НЕ ТУ КАТЕГОРИЮ. КАТЕГОРИИ ВСЕГО 2(напитки и завтраки)")
 
         position_1 = Position(
             name=form.name.data,
             price=form.price.data,
+            img=form.img.data,
             about=form.about.data
         )
         db_sess.add(position_1)
@@ -169,7 +180,26 @@ def to_pay():
     for basket1 in db_sess.query(Basket).all():
         db_sess.delete(basket1)
         db_sess.commit()
+
     return redirect('/')
+
+
+@app.route('/drink')
+@login_required
+def drink():
+    db_sess = session.create_session()
+    position1 = db_sess.query(Position)
+
+    return render_template('drink.html', position=position1, admin=ADMIN)
+
+
+@app.route('/breakfast')
+@login_required
+def breakfast():
+    db_sess = session.create_session()
+    position1 = db_sess.query(Position)
+
+    return render_template('breakfast.html', position=position1, admin=ADMIN)
 
 
 if __name__ == '__main__':
