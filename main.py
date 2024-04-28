@@ -202,5 +202,23 @@ def breakfast():
     return render_template('breakfast.html', position=position1, admin=ADMIN)
 
 
+@app.route('/like/<int:id>', methods=['GET', 'POST'])
+def like(id):
+    db_sess = session.create_session()
+    position = db_sess.query(Position).filter(Position.id == id).first()
+    position.like += 1
+    db_sess.commit()
+    return render_template('drink.html', title='давай поедим')
+
+
+@app.route('/dislike/<int:id>', methods=['GET', 'POST'])
+def dislike(id):
+    db_sess = session.create_session()
+    position = db_sess.query(Position).filter(Position.id == id).first()
+    position.dislike += 1
+    db_sess.commit()
+    return render_template('drink.html', title='давай поедим')
+
+
 if __name__ == '__main__':
     app.run(port=8080, host='127.0.0.1')
