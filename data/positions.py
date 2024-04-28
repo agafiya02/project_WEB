@@ -12,5 +12,7 @@ class Position(SqlAlchemyBase, UserMixin):
     name = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     img = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     about = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    price = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    price = sqlalchemy.Column(sqlalchemy.String)
     active = sqlalchemy.Column(sqlalchemy.Boolean, default=True)
+    like = sqlalchemy.Column(sqlalchemy.String, default=0)
+    dislike = sqlalchemy.Column(sqlalchemy.String, default=0)
