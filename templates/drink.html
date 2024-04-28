@@ -10,6 +10,8 @@
         <a class="nav-link active" aria-current="page" href="/breakfast">Завтраки</a>
     </li>
 </ul>
+
+
 {% if current_user.name != "admin" %}
 {% for item in position %}
 {% if item.active %}
@@ -20,10 +22,17 @@
             <div class="card-body">
                 <h4 class="card-text">{{item.name}}</h4>
                 <h4 class="card-text">{{item.price}}.руб</h4>
-                <img width="260" height="200" src="{{ item.img }}" alt="Картинка грузится!!">
+                <img width="260" height="200" src="{{ item.img }}" alt="ВЫ ВВЕЛИ НЕВЕРНЫЙ АДРЕСС СЫЛКИ!">
                 <a href="/basket/{{ item.id }}" class="btn btn-success btn-lg">
                     в корзину
                 </a>
+                <a href="/like/{{ item.id }}" class="btn btn-outline-danger">
+                    👍 {{ item.like }}
+                </a>
+                <a href="/dislike/{{ item.id }}" class="btn btn-outline-danger">
+                    👎 {{ item.dislike }}
+                </a>
+
             </div>
         </div>
     </div>
@@ -34,7 +43,6 @@
 {% endif %}
 {% endfor %}
 {% endif %}
-
 {% if current_user.name == "admin" %}
 {% for item in position %}
 {% if item.active %}
@@ -45,7 +53,7 @@
             <div class="card-body">
                 <h4 class="card-text">{{item.name}}</h4>
                 <h4 class="card-text">{{item.price}}.руб</h4>
-                <img width="260" height="200" src="{{ item.img }}">
+                <img width="260" height="200" src="{{ item.img }}" alt="ВЫ ВВЕЛИ НЕВЕРНЫЙ АДРЕСС СЫЛКИ!">
                 <a href="/basket/{{ item.id }}" class="btn btn-success btn-lg">
                     в корзину
                 </a>
@@ -55,6 +63,12 @@
                 <h1></h1>
                 <a href="/position_hide/{{ item.id }}" class="btn btn-danger btn-lg">
                     Скрыть для пользователя
+                </a>
+                <a href="/like/{{ item.id }}" class="btn btn-outline-danger">
+                    👍 {{ item.like }}
+                </a>
+                <a href="/dislike/{{ item.id }}" class="btn btn-outline-danger">
+                    👎 {{ item.dislike }}
                 </a>
             </div>
         </div>
@@ -75,7 +89,7 @@
             <div class="card-body">
                 <h4 class="card-text">{{item.name}}</h4>
                 <h4 class="card-text">{{item.price}}.руб</h4>
-                <img width="260" height="200" src="{{ item.img }}">
+                <img width="260" height="200" src="{{ item.img }}" alt="ВЫ ВВЕЛИ НЕВЕРНЫЙ АДРЕСС СЫЛКИ!">
                 <a href="/basket/{{ item.id }}" class="btn btn-success btn-lg">
                     в корзину
                 </a>
@@ -85,6 +99,12 @@
                 <h1></h1>
                 <a href="/position_hide/{{ item.id }}" class="btn btn-danger btn-lg">
                     Показать
+                </a>
+                <a href="/like/{{ item.id }}" class="btn btn-outline-danger">
+                    👍 {{ item.like }}
+                </a>
+                <a href="/dislike/{{ item.id }}" class="btn btn-outline-danger">
+                    👎 {{ item.dislike }}
                 </a>
             </div>
         </div>
